@@ -1,0 +1,93 @@
+package auth 
+
+import "github.com/lulzshadowwalker/pupsik/view/layout"
+
+type RegisterErrors struct {
+	Email                string
+	Password             string
+	PasswordConfirmation string
+}
+
+type RegisterParams struct {
+	Email                string
+	Password             string
+	PasswordConfirmation string
+}
+
+templ RegisterIndex() {
+	@layout.App() {
+		<main class="flex justify-center items-center min-h-[calc(100dvh-15rem)] mx-6">
+			@RegisterForm(RegisterParams{}, RegisterErrors{})
+		</main>
+	}
+}
+
+templ RegisterForm(params RegisterParams, errors RegisterErrors) {
+	<form
+		hx-post="/auth/register"
+		hx-swap="outerHTML"
+		class="flex flex-col max-w-screen-sm w-full rounded-xl"
+	>
+		<h1 class="text-2xl mb-4 font-medium">Create an account</h1>
+		<label class="form-control">
+			<div class="label">
+				<span class="label-text">Email Address</span>
+			</div>
+			<input
+				type="email"
+				name="email"
+				placeholder="email@example.com"
+				class="input input-bordered w-full rounded-btn"
+				value={ params.Email }
+			/>
+			<div class="label">
+				if errors.Email != "" {
+					<span class="label-text-alt text-error">{ errors.Email }</span>
+				}
+			</div>
+		</label>
+		<label class="form-control">
+			<div class="label">
+				<span class="label-text">Password</span>
+			</div>
+			<input
+				type="password"
+				name="password"
+				autocomplete="off"
+				placeholder="secret password"
+				class="input input-bordered w-full rounded-btn"
+			/>
+			<div class="label">
+				if errors.Password != "" {
+					<span class="label-text-alt text-error">{ errors.Password }</span>
+				}
+			</div>
+		</label>
+		<label class="form-control">
+			<div class="label">
+				<span class="label-text">Confirm Password</span>
+			</div>
+			<input
+				type="password"
+				name="password_confirmation"
+				autocomplete="off"
+				placeholder="enter your password again"
+				class="input input-bordered w-full rounded-btn"
+			/>
+			<div class="label">
+				if errors.PasswordConfirmation != "" {
+					<span class="label-text-alt text-error">{ errors.PasswordConfirmation }</span>
+				}
+			</div>
+		</label>
+		<button class="btn btn-accent mt-4">Sign up <i class="fa-solid fa-arrow-right"></i></button>
+		<div class="divider">or</div>
+		<button
+			hx-post="/auth/providers/google"
+			class="btn btn-outline"
+		>
+			Sign up with Google <i class="fa-brands fa-google"></i>
+		</button>
+		<p class="mt-2">Already have an account? <a class="link link-accent" href="/auth/providers/Google">sign in</a></p>
+	</form>
+}

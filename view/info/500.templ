@@ -1,0 +1,17 @@
+package info
+
+import "github.com/lulzshadowwalker/pupsik/view/layout"
+
+templ InternalServerError() {
+	@layout.App() {
+		<main class="hero min-h-[calc(100dvh-12rem)]">
+			<div class="hero-content text-center">
+				<div class="max-w-md">
+					<h1 class="text-5xl font-bold">Oops ..</h1>
+					<p class="py-4 italic text-lg">something went wrong, please try again later.</p>
+					<a href="/" class="btn btn-primary mt-3">Take me home</a>
+				</div>
+			</div>
+		</main>
+	}
+}

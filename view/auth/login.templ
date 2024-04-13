@@ -1,0 +1,63 @@
+package auth 
+
+import "github.com/lulzshadowwalker/pupsik/view/layout"
+import "github.com/nedpals/supabase-go"
+
+type LoginErrors struct {
+	Email    string
+	Password string
+}
+
+templ LoginIndex() {
+	@layout.App() {
+		<main class="flex justify-center items-center min-h-[calc(100dvh-15rem)] mx-6">
+			@LoginForm(supabase.UserCredentials{}, LoginErrors{})
+		</main>
+	}
+}
+
+templ LoginForm(credentials supabase.UserCredentials, errors LoginErrors) {
+	<form
+		hx-post="/auth/login"
+		hx-swap="outerHTML"
+		class="flex flex-col max-w-screen-sm w-full rounded-xl"
+	>
+		<h1 class="text-2xl mb-4 font-medium">Welcome Back, Login to Pupsik</h1>
+		<label class="form-control">
+			<div class="label">
+				<span class="label-text">Email Address</span>
+			</div>
+			<input
+				type="email"
+				name="email"
+				placeholder="email@example.com"
+				class="input input-bordered w-full rounded-btn"
+				value={ credentials.Email }
+			/>
+			<div class="label">
+				if errors.Email != "" {
+					<span class="label-text-alt text-error">{ errors.Email }</span>
+				}
+			</div>
+		</label>
+		<label class="form-control">
+			<div class="label">
+				<span class="label-text">Password</span>
+			</div>
+			<input
+				type="password"
+				name="password"
+				autocomplete="off"
+				placeholder="secret password"
+				class="input input-bordered w-full rounded-btn"
+			/>
+			<div class="label">
+				if errors.Password != "" {
+					<span class="label-text-alt text-error">{ errors.Password }</span>
+				}
+			</div>
+		</label>
+		<button class="btn btn-accent mt-4">Login <i class="fa-solid fa-arrow-right"></i></button>
+		<p class="mt-2">Don't have an account? <a class="link link-accent" href="/auth/register">sign up</a></p>
+	</form>
+}

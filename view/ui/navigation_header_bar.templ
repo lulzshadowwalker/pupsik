@@ -1,0 +1,36 @@
+package ui 
+
+import (
+	"github.com/lulzshadowwalker/pupsik/view"
+)
+
+templ NavigationHeaderBar() {
+	<header class="navbar bg-base-100 border-b-neutral">
+		<div class="flex-1">
+			<a href="/" class="btn btn-ghost text-xl">Pupsik</a>
+		</div>
+		<div class="flex-none">
+			<ul class="menu menu-horizontal px-1">
+				if view.GetUser(ctx).Email != "" {
+					<li>
+						<details>
+							<summary>
+								{ view.GetUser(ctx).Email }
+							</summary>
+							<ul class="p-2 bg-base-100 rounded-t-none">
+								<li>
+									<a href="/settings">Settings</a>
+								</li>
+								<li>
+									<a hx-post="/auth/logout">Sign out</a>
+								</li>
+							</ul>
+						</details>
+					</li>
+				} else {
+					<li><a href="/auth/login" class="btn btn-outline">Login</a></li>
+				}
+			</ul>
+		</div>
+	</header>
+}

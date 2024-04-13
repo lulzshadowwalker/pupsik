@@ -1,0 +1,10 @@
+package settings 
+
+import "github.com/lulzshadowwalker/pupsik/view"
+import "github.com/lulzshadowwalker/pupsik/view/layout"
+
+templ Index() {
+	@layout.App() {
+		<h1>hello, { view.GetUser(ctx).Email } </h1>
+	}
+}

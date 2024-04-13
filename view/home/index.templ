@@ -4,8 +4,11 @@ import "github.com/lulzshadowwalker/pupsik/view/layout"
 
 templ Index() {
 	@layout.App() {
-		<main class="min-h-screen min-w-screen flex items-center justify-center">
-			<h1 class="text-2xl text-primary">Hello from home, lulzie.</h1>
+		<main class="min-h-[calc(100dvh-12rem)] flex flex-col items-center justify-center">
+			<section>
+				<h1 class="text-2xl text-primary">Hello from home, lulzie.</h1>
+				<p class="text-md">This is a paragraph.</p>
+			</section>
 		</main>
 	}
 }
