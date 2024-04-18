@@ -20,7 +20,6 @@ func main() {
 	r.Use(mw.WithUser)
 
 	r.Handle("/*", http.StripPrefix("/", http.FileServer(http.FS(FS))))
-	r.Get("/", handler.Make(handler.HandleHomeIndex))
 
 	r.Get("/auth/login", handler.Make(handler.HandleLoginIndex))
 	r.Post("/auth/login", handler.Make(handler.HandleLogin))
@@ -30,9 +29,16 @@ func main() {
 	r.Get("/auth/callback", handler.Make(handler.HandleAuthCallback))
 	r.Post("/auth/providers/google", handler.Make(handler.HandleLoginWithGoogle))
 
-	r.Group(func(r chi.Router) {
-		r.Use(mw.WithAuth)
-		r.Get("/settings", handler.Make(handler.HandleSettingsIndex))
+	r.Group(func(auth chi.Router) {
+		auth.Use(mw.WithAuth)
+		auth.Get("/settings/account/setup", handler.Make(handler.HandleAccountSetupIndex))
+		auth.Post("/settings/account/setup", handler.Make(handler.HandleAccountSetupCreate))
+
+		auth.Group(func(account chi.Router) {
+			account.Use(mw.WithAccount)
+			account.Get("/", handler.Make(handler.HandleHomeIndex))
+			account.Get("/settings", handler.Make(handler.HandleSettingsIndex))
+		})
 	})
 
 	slog.Info("server started", "port", ":3000")

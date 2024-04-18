@@ -64,3 +64,6 @@ bin/
 .env
 
 tmp
+gq
+database/.gen
+lulzie.md

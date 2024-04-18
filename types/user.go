@@ -1,16 +1,20 @@
 package types
 
-import "github.com/nedpals/supabase-go"
+import (
+	"github.com/google/uuid"
+	"github.com/nedpals/supabase-go"
+)
 
 type User struct {
-	ID    string
-	Email string
-	Role  string
+	ID      uuid.UUID
+	Email   string
+	Role    string
+	Account Account
 }
 
 func NewUserFromSupabaseUser(user supabase.User) User {
 	return User{
-		ID:    user.ID,
+		ID:    uuid.MustParse(user.ID),
 		Role:  user.Role,
 		Email: user.Email,
 	}

@@ -1,0 +1,52 @@
+package settings
+
+import "github.com/lulzshadowwalker/pupsik/view/layout"
+
+type AccountSetupParams struct {
+	Username string
+}
+
+type AccountSetupErrors struct {
+	Username string
+}
+
+templ AccountSetupIndex() {
+	@layout.App() {
+		<main class="mt-8">
+			<h1 class="mb-4 max-w-screen-md mx-auto text-3xl font-medium">Account Setup</h1>
+			@AccountSetupForm(AccountSetupParams{}, AccountSetupErrors{})
+		</main>
+	}
+}
+
+templ AccountSetupForm(params AccountSetupParams, errors AccountSetupErrors) {
+	<form
+		id="account-setup-form"
+		class="max-w-screen-md mx-auto"
+	>
+		<label class="form-control w-full max-w-xs">
+			<div class="label">
+				<span class="label-text">What should we call you?</span>
+			</div>
+			<input
+				required
+				type="text"
+				placeholder="John Doe"
+				class="input input-bordered w-full max-w-xs"
+				value={ params.Username }
+				name="username"
+			/>
+			<div class="label">
+				if errors.Username != "" {
+					<span class="label-text-alt">{ errors.Username }</span>
+				}
+			</div>
+		</label>
+		<button
+			class="btn btn-accent"
+			hx-post="/settings/account/setup"
+			hx-target="#account-setup-form"
+			hx-swap="outerHTML"
+		>Save <i class="fa-solid fa-arrow-right"></i></button>
+	</form>
+}

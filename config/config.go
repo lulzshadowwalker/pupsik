@@ -21,6 +21,22 @@ func GetSupabaseSecret() string {
 	return os.Getenv("SUPABASE_KEY")
 }
 
+func GetDatabaseHost() string {
+	return os.Getenv("DATABASE_HOST")
+}
+
+func GetDatabaseUser() string {
+	return os.Getenv("DATABASE_USER")
+}
+
+func GetDatabaseName() string {
+	return os.Getenv("DATABASE_NAME")
+}
+
+func GetDatabasePort() string {
+	return os.Getenv("DATABASE_PORT")
+}
+
 func GetDatabasePassword() string {
-	return os.Getenv("DB_PASSWORD")
+	return os.Getenv("DATABASE_PASSWORD")
 }

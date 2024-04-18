@@ -15,9 +15,13 @@ templ NavigationHeaderBar() {
 					<li>
 						<details>
 							<summary>
-								{ view.GetUser(ctx).Email }
+								if view.GetUser(ctx).Account.Username  != "" {
+									{ view.GetUser(ctx).Account.Username }
+								} else {
+									{ view.GetUser(ctx).Email }
+								}
 							</summary>
-							<ul class="p-2 bg-base-100 rounded-t-none">
+							<ul class="p-2 bg-base-100 rounded-t-none -translate-x-4">
 								<li>
 									<a href="/settings">Settings</a>
 								</li>
