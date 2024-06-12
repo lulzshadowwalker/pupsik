@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-jet/jet/v2/qrm"
 	"github.com/lulzshadowwalker/pupsik/database"
+	"github.com/lulzshadowwalker/pupsik/handler"
 	"github.com/lulzshadowwalker/pupsik/pkg/supa"
 	"github.com/lulzshadowwalker/pupsik/types"
 	"github.com/lulzshadowwalker/pupsik/utils"
@@ -21,13 +22,14 @@ func WithUser(next http.Handler) http.Handler {
 			return
 		}
 
-		cookie, err := r.Cookie("access_token")
-		if err != nil || cookie.Value == "" {
+		session, _ := handler.Store.Get(r, handler.SessionUserKey)
+		accessToken := session.Values[handler.SessionAccessTokenKey]
+		if accessToken == "" || accessToken == nil {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		supahUser, err := supa.Client.Auth.User(r.Context(), cookie.Value)
+		supahUser, err := supa.Client.Auth.User(r.Context(), accessToken.(string))
 		if err != nil {
 			slog.Error("Failed to get user", "err", err)
 			next.ServeHTTP(w, r)

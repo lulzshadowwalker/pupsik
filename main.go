@@ -19,7 +19,7 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(mw.WithUser)
 
-	r.Handle("/*", http.StripPrefix("/", http.FileServer(http.FS(FS))))
+	r.Handle("/*", public())
 
 	r.Get("/auth/login", handler.Make(handler.HandleLoginIndex))
 	r.Post("/auth/login", handler.Make(handler.HandleLogin))
@@ -28,15 +28,18 @@ func main() {
 	r.Post("/auth/logout", handler.Make(handler.HandleLogout))
 	r.Get("/auth/callback", handler.Make(handler.HandleAuthCallback))
 	r.Post("/auth/providers/google", handler.Make(handler.HandleLoginWithGoogle))
+	r.Post("/replicate/callback/{userID}/{batchID}", handler.Make(handler.HandleReplicateCallback))
 
 	r.Group(func(auth chi.Router) {
 		auth.Use(mw.WithAuth)
 		auth.Get("/settings/account/setup", handler.Make(handler.HandleAccountSetupIndex))
 		auth.Post("/settings/account/setup", handler.Make(handler.HandleAccountSetupCreate))
+		auth.Get("/generate/image/status/{id}", handler.Make(handler.HandleGenerateImageStatus))
 
 		auth.Group(func(account chi.Router) {
 			account.Use(mw.WithAccount)
 			account.Get("/", handler.Make(handler.HandleHomeIndex))
+			account.Post("/generate", handler.Make(handler.HandleGalleryCreate))
 			account.Get("/settings", handler.Make(handler.HandleSettingsIndex))
 		})
 	})

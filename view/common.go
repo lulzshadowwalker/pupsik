@@ -8,6 +8,6 @@ import (
 )
 
 func GetUser(ctx context.Context) types.User {
-	u := utils.GetUserFromContext(ctx)
-	return u
+	user, _ := utils.GetUserFromContext(ctx)
+	return user
 }

@@ -22,7 +22,7 @@ templ LoginForm(credentials supabase.UserCredentials, errors LoginErrors) {
 		hx-swap="outerHTML"
 		class="flex flex-col max-w-screen-sm w-full rounded-xl"
 	>
-		<h1 class="text-2xl mb-4 font-medium">Welcome Back, Login to Pupsik</h1>
+		<h1 class="text-2xl m-4 font-medium">Welcome Back, Login to Pupsik</h1>
 		<label class="form-control">
 			<div class="label">
 				<span class="label-text">Email Address</span>
@@ -58,6 +58,13 @@ templ LoginForm(credentials supabase.UserCredentials, errors LoginErrors) {
 			</div>
 		</label>
 		<button class="btn btn-accent mt-4">Login <i class="fa-solid fa-arrow-right"></i></button>
+		<div class="divider">or</div>
+		<button
+			hx-post="/auth/providers/google"
+			class="btn btn-outline"
+		>
+			Continue with Google <i class="fa-brands fa-google"></i>
+		</button>
 		<p class="mt-2">Don't have an account? <a class="link link-accent" href="/auth/register">sign up</a></p>
 	</form>
 }

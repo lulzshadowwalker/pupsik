@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"time"
 
 	"github.com/lulzshadowwalker/pupsik/pkg/supa"
 	"github.com/lulzshadowwalker/pupsik/utils"
@@ -41,7 +40,9 @@ func HandleLogin(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("failed to login user because %w", err)
 	}
 
-	setAuthCookie(w, details.AccessToken)
+	if err := setAuthCookie(w, r, details.AccessToken); err != nil {
+		return err
+	}
 	slog.Info("User Login")
 	return HxRedirect(w, r, "/")
 }
@@ -97,36 +98,30 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) error {
 		Password: params.Password,
 	}
 
-	user, err := supa.Client.Auth.SignUp(r.Context(), credentials)
+	_, err := supa.Client.Auth.SignUp(r.Context(), credentials)
 	if err != nil {
 		return fmt.Errorf("failed to register new user because %w", err)
 	}
 
-	_ = user
-	// setAuthCookie(w, user.Ac)
-
 	slog.Info("User Registered")
-
-	HxRedirect(w, r, "/")
-	return nil
+	return HxRedirect(w, r, "/")
 }
 
 func HandleLogout(w http.ResponseWriter, r *http.Request) error {
-	setAuthCookie(w, "")
-	HxRedirect(w, r, "/auth/login")
-	return nil
+	if err := setAuthCookie(w, r, ""); err != nil {
+		return err
+	}
+	return HxRedirect(w, r, "/auth/login")
 }
 
-func setAuthCookie(w http.ResponseWriter, accessToken string) {
-	http.SetCookie(w, &http.Cookie{
-		Name:     "access_token",
-		Value:    accessToken,
-		Expires:  time.Now().Add(time.Hour * 24 * 30),
-		Secure:   true,
-		Path:     "/",
-		SameSite: http.SameSiteStrictMode,
-		HttpOnly: true,
-	})
+func setAuthCookie(w http.ResponseWriter, r *http.Request, accessToken string) error {
+	session, _ := Store.Get(r, SessionUserKey)
+	session.Values[SessionAccessTokenKey] = accessToken
+	if err := session.Save(r, w); err != nil {
+		return fmt.Errorf("failed to save cookie session because %w", err)
+	}
+
+	return nil
 }
 
 func HandleAuthCallback(w http.ResponseWriter, r *http.Request) error {
@@ -135,7 +130,9 @@ func HandleAuthCallback(w http.ResponseWriter, r *http.Request) error {
 		return render(w, r, auth.CallbackScript())
 	}
 
-	setAuthCookie(w, accessToken)
+	if err := setAuthCookie(w, r, accessToken); err != nil {
+		return err
+	}
 	HxRedirect(w, r, "/")
 	return nil
 }

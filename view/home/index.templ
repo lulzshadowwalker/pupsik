@@ -1,14 +1,74 @@
 package home 
 
 import "github.com/lulzshadowwalker/pupsik/view/layout"
+import "github.com/lulzshadowwalker/pupsik/types"
+import "fmt"
 
-templ Index() {
+type IndexParams struct {
+	Images []types.Image
+}
+
+templ Index(params IndexParams) {
 	@layout.App() {
-		<main class="min-h-[calc(100dvh-12rem)] flex flex-col items-center justify-center">
-			<section>
-				<h1 class="text-2xl text-primary">Hello from home, lulzie.</h1>
-				<p class="text-md">This is a paragraph.</p>
+		<main>
+			<section class="flex min-h-[calc(100dvh-68px)] max-h-[calc(100dvh-68px)]">
+				@GenerationForm()
+				<section id="gallery" class="flex-grow grid grid-cols-4 gap-6 p-6 overflow-scroll">
+					for _, img := range params.Images {
+						@Image(img)
+					}
+				</section>
 			</section>
 		</main>
+	}
+}
+
+templ GenerationForm() {
+	<form
+		id="gen-form"
+		class="max-w-[25rem] w-full flex flex-col gap-2 p-6 mt-auto"
+		hx-post="/generate"
+		hx-target="#gallery"
+		hx-swap="afterbegin"
+	>
+		<input
+			type="text"
+			name="prompt"
+			placeholder="What are you thinking of?"
+			class="input input-bordered w-full"
+			required
+		/>
+		<button class="btn btn-accent">Generate</button>
+	</form>
+	<script type="text/javascript">	
+			function resetForm() { $("#gen-form").trigger("reset"); }
+	</script>
+}
+
+templ Image(img types.Image) {
+	switch img.Status {
+		case types.ImageStatusPending:
+			<div
+				href="#"
+				hx-get={ fmt.Sprintf("/generate/image/status/%d", img.ID) }
+				hx-trigger="load delay:3s"
+				class="skeleton h-48 rounded-box bg-base-200 shadow-sm md:h-80"
+			></div>
+		case types.ImageStatusError:
+			<div
+				href="#"
+				class="flex items-center justify-center h-48 rounded-box bg-base-200 shadow-sm md:h-80"
+			>
+				<i class="fa-solid fa-bug text-5xl"></i>
+			</div>
+		case types.ImageStatusFinished:
+			<a
+				href={ templ.URL(img.URL) }
+				class="group relative flex h-48 items-end overflow-hidden rounded-box bg-base-200 shadow-sm md:h-80"
+				rel="noopener noreferrer"
+				target="_blank"
+			>
+				<img src={ img.URL } loading="lazy" alt="Photo by Minh Pham" class="absolute inset-0 h-full w-full object-cover object-center transition duration-[900] ease-out group-hover:scale-110"/>
+			</a>
 	}
 }

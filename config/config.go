@@ -40,3 +40,15 @@ func GetDatabasePort() string {
 func GetDatabasePassword() string {
 	return os.Getenv("DATABASE_PASSWORD")
 }
+
+func GetSessionKey() string {
+	return os.Getenv("SESSION_KEY")
+}
+
+func GetReplicateAPIKey() string {
+	return os.Getenv("REPLICATE_API_KEY")
+}
+
+func GetAppURL() string {
+	return os.Getenv("APP_URL")
+}

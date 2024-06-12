@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/lulzshadowwalker/pupsik/handler"
-	"github.com/lulzshadowwalker/pupsik/types"
 	"github.com/lulzshadowwalker/pupsik/utils"
 )
 
@@ -16,8 +15,8 @@ func WithAuth(next http.Handler) http.Handler {
 			return
 		}
 
-		user := utils.GetUserFromContext(r.Context())
-		if user == (types.User{}) {
+		_, err := utils.GetUserFromContext(r.Context())
+		if err != nil {
 			handler.HxRedirect(w, r, "/auth/login")
 			return
 		}

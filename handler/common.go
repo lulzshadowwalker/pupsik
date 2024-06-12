@@ -5,8 +5,21 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
+	"github.com/gorilla/sessions"
+	"github.com/lulzshadowwalker/pupsik/config"
 	"github.com/lulzshadowwalker/pupsik/view/info"
 )
+
+type SessionKey string
+
+const (
+	SessionUserKey         = "user"
+	SessionNotificationKey = "notifications"
+	SessionToastKey        = "toast"
+	SessionAccessTokenKey  = "access_token"
+)
+
+var Store = sessions.NewCookieStore([]byte(config.GetSessionKey()))
 
 func Make(h func(http.ResponseWriter, *http.Request) error) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

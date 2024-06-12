@@ -1,10 +1,30 @@
 package settings 
 
-import "github.com/lulzshadowwalker/pupsik/view"
 import "github.com/lulzshadowwalker/pupsik/view/layout"
+import "github.com/lulzshadowwalker/pupsik/view"
 
 templ Index() {
 	@layout.App() {
-		<h1>hello, { view.GetUser(ctx).Email } </h1>
+		<main class="mt-8 mx-6">
+			<h1 class="my-6 max-w-screen-md mx-auto text-3xl font-medium">Settings</h1>
+			<form class="max-w-screen-md mx-auto">
+				<h2 class="text-xl font-medium pb-3 my-4 border-b-2 border-base-300">Account</h2>
+				<label class="input input-bordered flex items-center gap-2">
+					Username
+					<input id="username" type="text" class="grow" placeholder={ view.GetUser(ctx).Account.Username }/>
+				</label>
+				<button id="usernanme-update-btn" class="hidden btn btn-accent my-6 ms-auto">Save <i class="fa-solid fa-arrow-right"></i></button>
+			</form>
+		</main>
 	}
+	<script>
+		$("#username").on("input", function handleUsernameInput() {
+			const value = $(this).val();
+  		    const $updateBtn = $("#usernanme-update-btn");
+  		    $btn.toggleClass("hidden", !value).fadeTo(50, value ? 1 : 0);
+  		    if (value) {
+  		    	$btn.css("display", "flex");
+  		    }
+		});
+	</script>
 }

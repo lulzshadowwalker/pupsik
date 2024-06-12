@@ -20,6 +20,12 @@ install:
 	@npm install --global tailwindcss
 	@npm install --save-dev daisyui@latest
 
+css:
+	@tailwindcss -i view/css/app.css -o public/styles.css --watch
+
+templ:
+	@templ generate --watch
+
 build:
 	@tailwindcss -i view/css/app.css -o public/styles.css
 	@templ generate view

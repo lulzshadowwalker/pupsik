@@ -9,7 +9,6 @@ import (
 
 	"github.com/go-jet/jet/v2/qrm"
 	"github.com/lulzshadowwalker/pupsik/database"
-	"github.com/lulzshadowwalker/pupsik/types"
 	"github.com/lulzshadowwalker/pupsik/utils"
 )
 
@@ -20,8 +19,8 @@ func WithAccount(next http.Handler) http.Handler {
 			return
 		}
 
-		user := utils.GetUserFromContext(r.Context())
-		if user == (types.User{}) {
+		user, err := utils.GetUserFromContext(r.Context())
+		if err != nil {
 			slog.ErrorContext(r.Context(), "failed to get user account", "err", "WithAccount middleware should only be used when having an authenticated user")
 			next.ServeHTTP(w, r)
 			return

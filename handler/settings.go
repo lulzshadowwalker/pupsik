@@ -17,12 +17,12 @@ func HandleSettingsIndex(w http.ResponseWriter, r *http.Request) error {
 }
 
 func HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
-	user := utils.GetUserFromContext(r.Context())
-	if user == (types.User{}) {
+	user, err := utils.GetUserFromContext(r.Context())
+	if err != nil {
 		panic("account setup page should not be accessed by unauthenticated users")
 	}
 
-	_, err := database.GetAccountByUserID(r.Context(), user.ID)
+	_, err = database.GetAccountByUserID(r.Context(), user.ID)
 	if err != nil && !errors.Is(err, qrm.ErrNoRows) {
 		return fmt.Errorf("failed to get account by user id because %w", err)
 	}
@@ -44,8 +44,8 @@ func HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
 		return render(w, r, settings.AccountSetupForm(params, errors))
 	}
 
-	user := utils.GetUserFromContext(r.Context())
-	if user == (types.User{}) {
+	user, err := utils.GetUserFromContext(r.Context())
+	if err != nil {
 		panic("account setup page should not be accessed by unauthenticated users")
 	}
 
@@ -53,7 +53,7 @@ func HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
 		UserID:   user.ID,
 		Username: params.Username,
 	}
-	_, err := database.CreateAccount(r.Context(), account, nil)
+	_, err = database.CreateAccount(r.Context(), account, nil)
 	if err != nil {
 		return err
 	}
